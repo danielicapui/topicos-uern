@@ -1,18 +1,16 @@
 #include <iostream>
-//Já tinha feito implementação em c, c++ e em python dela mas essa é baseado no modelo do professor. Só que utilizando dois struct
-//Esse struct usamos para os nós da lista
-typedef struct no
+#include<vector>
+#include "encadeada.h"
+#include <iterator>
+#include <stack>
+//função para iniciar  listas com valores padrão
+void createLista(Lista *lista)
 {
-    int dado;
-    no *prox;
-}no;
-//A lista propriamente dita, veja que tem dois ponteiros que guardam a posição do começo e fim da lista
-//Como também o tamanho da lista
-typedef struct Lista{
-    no *start, *end;
-    int tam;
-}Lista;
-//Tratar alguns erros de inputs de usuários 
+    lista->start=NULL;
+    lista->end=NULL;
+    lista->tam=0;
+}
+//Tratar alguns erros de inputs de usuários
 int handle_exception()
 {
     int numero;
@@ -31,8 +29,8 @@ int handle_exception()
         catch (...)
         {
             std::cerr<<"Erro não tratado"<<std::endl;
-        }    
-        
+        }
+
     }
 }
 //Função de adiciona no começo
@@ -41,7 +39,7 @@ void addStart(Lista *lista,int numero)
     //ponteiro auxilar do numero
     no *aux=(no*)malloc(sizeof(no));
     aux->dado=numero;
-    //Verifica se o começo é nulo 
+    //Verifica se o começo é nulo
     if (lista->start!=NULL)
     {
         //atribui o numero e muda o ponteiro.
@@ -50,7 +48,7 @@ void addStart(Lista *lista,int numero)
     }
     else
     {
-        //como é nulo basta apontar para nulo e atribuir os valores da variavel auxiliar para a lista 
+        //como é nulo basta apontar para nulo e atribuir os valores da variavel auxiliar para a lista
         aux->prox=NULL;
         lista->start=aux;
         lista->end=aux;
@@ -58,7 +56,7 @@ void addStart(Lista *lista,int numero)
     //Importante aqui é para controlar o tamanho da lista
     lista->tam++;
 }
-//Função de adicionar no final, perceba as diferenças? Encontrou alguma? 
+//Função de adicionar no final, perceba as diferenças? Encontrou alguma?
 void addEnd(Lista *lista,int numero)
 {
     //aqui para quem usa c, sabe que precisa alocar
@@ -109,7 +107,7 @@ void removeLista(Lista *lista, int numero)
     }
     else
     {
-        //movemos o ponteiro//lista até encontrar o elemento 
+        //movemos o ponteiro//lista até encontrar o elemento
         while(start->prox !=NULL && start->prox->dado !=numero && start !=NULL)
         {
             start=start->prox;
@@ -132,52 +130,193 @@ void removeLista(Lista *lista, int numero)
         lista->tam--;
     }
 }
-int menu(Lista *lista,int op)
+no* findElement(Lista *lista,int numero)
 {
-    int numero;
-    if (op==1 || op==2 || op==3)
+    no *start= lista->start;
+    for(start;start!=NULL;start=start->prox)
     {
-        numero=handle_exception();
-        if (op==1)
-            addStart(lista,numero);
-        else if (op==2)
-            addEnd(lista,numero);
-        else
-            removeLista(lista,numero);
+        if (start->dado ==numero) return  start;
     }
-    else if (op==4)
-        showLista(lista);
-    else if (op==5)
-        tamLista(lista);
-    else if (op==6)
-        return 999;
+    return NULL;
+}
+bool inLista(Lista *lista,int numero)
+{
+    no *start= lista->start;
+    for(start;start!=NULL;start=start->prox)
+    {
+        if (start->dado ==numero) return true;
+    }
+    return false;
+}
+
+int particao(std::vector<int>& usagi,int e_esq,int e_dir)
+{
+    int e_pivo=usagi[e_dir];
+    int rabbit=e_esq-1;
+    for(int elem=e_esq;elem<e_dir;elem++)
+    {
+        if (usagi[elem]<=e_pivo)
+        {
+                rabbit=rabbit+1;
+                int ino=usagi[rabbit];
+                usagi[rabbit]=usagi[elem];
+                usagi[elem]=ino;
+        }
+    }
+    int ino=usagi[e_dir];
+    usagi[e_dir]=usagi[1+rabbit];
+    usagi[1+rabbit]=ino;
+    return 1+rabbit;
+}
+//use quick_sort(vetor,0,tamanho do vetor-1)
+void quick_sort(std::vector<int>& usagi,int e_esq,int e_dir)
+{
+    if (usagi.size()==1 || usagi.size()==0)
+    {
+        return;
+    }
+    if (e_esq < e_dir)
+    {
+        int e_pivo = particao(usagi,e_esq,e_dir);
+        quick_sort(usagi,e_esq,e_pivo-1);
+        quick_sort(usagi,e_pivo+1,e_dir);
+    }
+}
+void trocar(std::vector<int>& vetor, int i, int j)
+{
+    int aux= vetor[i];
+    vetor[i] = vetor[j];
+    vetor[j] =aux;
+}
+int particiona(std::vector<int>& vetor, int inicio, int fim)
+{
+    int e_pivo= vetor[fim];
+    int rabbit= (inicio - 1);
+
+    for (int j = inicio; j <= fim- 1; j++)
+    {
+        if (vetor[j] <=e_pivo)
+        {
+            rabbit++;
+            trocar(vetor,rabbit,j);
+        }
+    }
+    trocar(vetor,rabbit+1,fim);
+    return (rabbit + 1);
+}
+//
+void quick_sortImperativo(std::vector<int>& vetor,int inicio,int fim)
+{
+    int pilha[fim-inicio+1];
+    int top=-1;
+    pilha[++top]=inicio;
+    pilha[++top]=fim;
+    while (top>=0)
+    {
+        int fim= pilha[top--];
+        int inicio =pilha[top--];
+        int p=particiona(vetor,inicio,fim);
+        if (p-1>inicio)
+        {
+            pilha[++top]=inicio;
+            pilha[++top]=p-1;
+        }
+        if (p+1<fim)
+        {
+            pilha[++top]=p+1;
+            pilha[++top]=fim;
+        }
+    }
+}
+void mostrarVetor(std::vector<int>& vetor)
+{
+    for(int i=0;i<vetor.size();i++)
+    {
+        std::cout<<vetor[i]<<std::endl;
+    }
+}
+std::vector<int> toVector(Lista *lista)
+{
+    no* start=lista->start;
+    std::vector<int>vetor;
+    int i=0;
+    for(start;start!=NULL;start=start->prox)
+    {
+        if (start!=NULL)
+        {
+            vetor.push_back(start->dado);
+            i++;
+        }
+    }
+    return vetor;
+}
+void deleteLista(Lista *lista)
+{
+    std::vector<int>aux=toVector(lista);
+    for(int i=0;i<aux.size();i++)
+    {
+        removeLista(lista,aux[i]);
+    }
+    std::cout<<"Lista limpa"<<std::endl;
+}
+void toLista(std::vector<int>& vetor,Lista *lista)
+{
+    for(int i=0;i<vetor.size();i++)
+    {
+        addEnd(lista,vetor[i]);
+    }
+}
+void orderLista(Lista *lista)
+{
+    std::vector<int> vetor=toVector(lista);
+    quick_sort(vetor,0,vetor.size()-1);
+    deleteLista(lista);
+    toLista(vetor,lista);
+}
+//primeiro,ultimo-1,vetor,numero
+int buscaBinariaRecursiva(int primeiro,int ultimo,int* vetor,int numero)
+{
+    int meio=(int)(primeiro+ultimo)/2;
+    if(vetor[meio]==numero)
+    {
+        return meio;
+    }
+    else if (vetor[meio]>numero)
+    {
+        buscaBinariaRecursiva(primeiro,meio-1,vetor,numero);
+    }
     else
     {
-        std::cout<<"Error 1:Opção inválida, Digite novamente"<<std::endl;
-        return 1;
+        buscaBinariaRecursiva(meio+1,ultimo,vetor,numero);
     }
-    return 0;
 }
-//função para iniciar  listas com valores padrão
-void createLista(Lista *lista)
+//tamanho do vetor,vetor,numero desejado
+int buscaBinariaImperativa(int tam,int* vetor,int numero)
 {
-    lista->start=NULL;
-    lista->end=NULL;
-    lista->tam=0;
-}
-int main()
-{
-    int op=0;
-    Lista lista;
-    createLista(&lista);
-    do
+    int primeiro=0,ultimo=tam-1;
+    bool found=false;
+    while(primeiro<=ultimo && found==false)
     {
-        std::cout<<"Digite 1: Adiciona número no começo\nDigite 2:Adicionar número no fim\nDigite 3: Remover um número\nDigite 4:Mostrar Lista\nDigite 5:Mostrar tamanho da lista\nDigite 6:Para encerrar"<<std::endl;
-        op=handle_exception();
-        op=menu(&lista,op);
-        if (op==999)
-            break;
-    } while (op!=999);
-    
-    return 0;
+        int meio=(int)(primeiro+ultimo)/2;
+        if (vetor[meio]==numero)
+        {
+            found=true;
+            return meio;
+        }
+        else
+        {
+            if (vetor[meio]>numero)
+            {
+                ultimo=meio-1;
+            }
+            else
+            {
+                primeiro=meio+1;
+            }
+        }
+
+    }
+    std::cout<<"número:"<<numero<<" não existe no vetor"<<std::endl;
+    return -1;
 }
+
