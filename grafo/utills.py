@@ -86,7 +86,7 @@ class BelmannFord:
         for _ in range(len(self.vertices)-1):
             for ponto in self.grafo:
                 for vizinho in self.grafo[ponto]:
-                # If the distance between the ponto and the vizinho is lower than the current, store it
+                # se a distancia é menor
                     if self.caminhos[ponto] + self.grafo[ponto][vizinho]<self.caminhos[vizinho]:
                         self.caminhos[vizinho]=self.caminhos[ponto] + self.grafo[ponto][vizinho]
                         self.geradores[vizinho]=ponto
@@ -124,7 +124,7 @@ def custoMinimo(grafo,vertice,testes=1):
     while not fila.isVazia():
         atual = fila.removerLeft()
         if grafo[atual]=={}:
-            break;
+            break
         if(c==0):
             print("Visitando o vértice: " + str(atual))
         else:
@@ -152,6 +152,7 @@ def lerArquivo(nome):
                 l=line.split()
                 grafo.addAresta([l[0],l[1],int(l[2])])
     return grafo
+
 def lerJson(nome):
     grafo=json.load(open(nome))
     vertices=[i for i in grafo.keys()]

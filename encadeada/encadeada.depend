@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1629050443 source:c:\users\brasil\documents\algoritmos\topicos\encadeada.cpp
+	<iostream>
+	<vector>
+	"encadeada.h"
+	<iterator>
+	<stack>
+
+1629050458 c:\users\brasil\documents\algoritmos\topicos\encadeada.h
+	<vector>
+
+1629050396 source:c:\users\brasil\documents\algoritmos\topicos\main.cpp
+	"encadeada.h"
+	<iostream>
+

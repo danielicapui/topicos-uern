@@ -67,17 +67,17 @@ int q2()
     quick_sort(usagi,0,usagi.size()-1);
     mostrarVetor(usagi);
     std::cout<<"Parta b modo imperativo!"<<std::endl;
-    std::vector<int> usagi1={1,25,3,142,312};
-    quick_sortImperativo(usagi1,0,usagi.size()-1);
+    std::vector<int> usagi1={30,100,40,2};
+    quick_sortImperativo(usagi1,0,usagi1.size()-1);
     mostrarVetor(usagi1);
     return 0;
 }
 int q3()
 {
     int v1[] = {1, 3, 5, 6, 9, 12, 15, 20, 25};
-    std::cout<<"Parte a modo imperativo";
+    std::cout<<"Parte a modo imperativo"<<std::endl;
     int n=buscaBinariaImperativa(9,v1,20);
-    std::cout<<"Parte b modo recursivo";
+    std::cout<<"Parte b modo recursivo"<<std::endl;
     int n1=buscaBinariaRecursiva(0,9,v1,20);
     std::cout<<"Numero encontrado em:"<<n<<std::endl;
     std::cout<<"Numero encontrado em:"<<n1<<std::endl;

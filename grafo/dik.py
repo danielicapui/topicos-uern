@@ -5,9 +5,9 @@ def menu(op,vertices,grafo,pontos):
         dij=Dijkstra(vertices,grafo)
         geradores,distancia= dij.find_route(pontos[0],pontos[1])
         caminhoMinimo(dij,geradores,distancia,pontos)
-        custo=custoMinimo(grafo,pontos[0])
+        #custo=custoMinimo(grafo,pontos[0]) este é outro algoritmo para não orientados e com lista final vazia
         print("-"*40)
-        print("custo minimo de cada vertice:",custo)
+        #print("custo minimo de cada vertice:",custo)
     if op==2:
         ino=BelmannFord(vertices,grafo)
         distancias,geradores=ino.finder_route(pontos[0])
